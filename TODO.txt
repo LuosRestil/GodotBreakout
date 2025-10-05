@@ -1,0 +1,4 @@
+- paddle accel/decel
+- fix weird collisions
+- score
+- ball accelerates as bricks are destroyed

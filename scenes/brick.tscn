@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3 uid="uid://be6m7brci0ic2"]
+
+[ext_resource type="Script" uid="uid://bkt8bchr74hn1" path="res://scenes/brick.gd" id="1_0w5h4"]
+[ext_resource type="Texture2D" uid="uid://sdis1ue30rha" path="res://assets/brick.png" id="1_5l4w1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5l4w1"]
+size = Vector2(80, 30)
+
+[sub_resource type="Curve" id="Curve_0w5h4"]
+_data = [Vector2(0, 1), 0.0, -0.3566798, 0, 1, Vector2(0.8694818, 0.6898734), -1.1230516, -1.1230516, 0, 0, Vector2(1, 0), -5.2856493, 0.0, 1, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_7mekc"]
+curve = SubResource("Curve_0w5h4")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_c34n8"]
+lifetime_randomness = 0.5
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(40, 15, 1)
+direction = Vector3(0, 1, 0)
+spread = 20.0
+initial_velocity_max = 100.0
+gravity = Vector3(0, 300, 0)
+scale_min = 3.0
+scale_max = 6.0
+scale_curve = SubResource("CurveTexture_7mekc")
+
+[node name="Brick" type="StaticBody2D"]
+modulate = Color(0.5603957, 0.9077467, 0.8906198, 1)
+script = ExtResource("1_0w5h4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_5l4w1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_5l4w1")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+z_index = 10
+z_as_relative = false
+emitting = false
+amount = 70
+one_shot = true
+explosiveness = 0.9
+randomness = 0.6
+process_material = SubResource("ParticleProcessMaterial_c34n8")
+
+[connection signal="finished" from="GPUParticles2D" to="." method="_on_gpu_particles_2d_finished"]

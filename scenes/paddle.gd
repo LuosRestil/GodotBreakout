@@ -1,6 +1,6 @@
 class_name Paddle extends CharacterBody2D
 
-@export var speed: float = 600
+@export var speed: float = 800
 # TODO accel/decel?
 
 var original_position: Vector2

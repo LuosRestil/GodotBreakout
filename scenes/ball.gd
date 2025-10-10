@@ -42,23 +42,22 @@ func _physics_process(delta: float) -> void:
 		iterations += 1
 		
 		var safe_frac = cast.get_closest_collision_safe_fraction()
-		var hit_frac = cast.get_closest_collision_unsafe_fraction()
 		# advance to cntact point
 		position += motion * safe_frac
-		remaining_dist *= (1 - hit_frac)
+		remaining_dist *= (1 - safe_frac)
 		# sum normals, trigger brick hit code
 		var normal_sum: Vector2 = Vector2.ZERO
 		var collision_count = cast.get_collision_count()
 		for i in collision_count:
 			var collider: Object = cast.get_collider(i)
-			if collider.has_method("take_hit"):
-				collider.take_hit()
+			var normal := cast.get_collision_normal(i)
 			if collider is Paddle and collision_count == 1:
 				var hit_x := cast.get_collision_point(i).x
-				normal_sum = _get_modified_normal(collider, velocity, hit_x)
-				break
-			else:
-				normal_sum += cast.get_collision_normal(i)
+				normal = _get_modified_normal(collider, velocity, hit_x)
+			if abs(velocity.dot(normal)) > 0.0001:
+				if collider.has_method("take_hit"):
+					collider.take_hit()
+				normal_sum += normal
 
 		if normal_sum != Vector2.ZERO:
 			velocity = velocity.bounce(normal_sum.normalized())

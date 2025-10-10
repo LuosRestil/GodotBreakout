@@ -10,16 +10,26 @@ var start_pos: Vector2
 var radius: float = 10
 var speed := 800
 var velocity: Vector2 = Vector2.DOWN
-
+var active := false
+var paddle_pos: Vector2
 
 func _ready():
 	start_pos = position
 	sprite.polygon = _make_circle_points(radius)
 	reset()
+	
+
+func _process(_delta: float) -> void:
+	if active: return
+	if Input.is_action_just_pressed("action"):
+		active = true
 
 
-func _physics_process(delta: float) -> void:
-	queue_redraw()
+func _physics_process(delta: float) -> void:		
+	if not active:
+		position.x = paddle_pos.x
+		return
+
 	var motion := velocity * delta
 	
 	cast.global_position = global_position
@@ -64,6 +74,7 @@ func _physics_process(delta: float) -> void:
 	
 func reset():
 	position = start_pos
+	active = false
 	direction = Vector2.UP
 	velocity = speed * direction
 	
@@ -86,3 +97,7 @@ func _make_circle_points(circle_radius: float, resolution: int = 32) -> PackedVe
 		var angle := TAU * i / resolution
 		pts.append(Vector2.from_angle(angle) * circle_radius)
 	return pts
+	
+
+func get_paddle_pos(pos: Vector2):
+	paddle_pos = pos

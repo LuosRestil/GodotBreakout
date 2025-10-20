@@ -1,3 +1,7 @@
 - paddle accel/decel
-- score
 - ball accelerates as bricks are destroyed
+- tweak brick size
+- levels
+
+- title screen
+- death screen

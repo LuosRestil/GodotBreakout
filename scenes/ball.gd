@@ -8,7 +8,8 @@ class_name Ball extends Node2D
 var direction: Vector2
 var start_pos: Vector2
 var radius: float = 10
-var speed := 800
+var base_speed := 600.0
+var speed := 0.0
 var velocity: Vector2 = Vector2.DOWN
 var active := false
 var paddle_pos: Vector2
@@ -22,6 +23,7 @@ func _ready():
 func _process(_delta: float) -> void:
 	if active: return
 	if Input.is_action_just_pressed("action"):
+		velocity = speed * direction
 		active = true
 
 
@@ -69,13 +71,14 @@ func _physics_process(delta: float) -> void:
 		cast.force_shapecast_update()
 	
 	position += motion
+	velocity = velocity.normalized() * speed
 	
 	
 func reset():
 	position = start_pos
 	active = false
 	direction = Vector2.UP
-	velocity = speed * direction
+	speed = base_speed
 	
 	
 func _get_modified_normal(paddle: Paddle, v_in: Vector2, hit_x: float) -> Vector2:

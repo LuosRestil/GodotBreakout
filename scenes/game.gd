@@ -6,16 +6,28 @@ const BRICK = preload("uid://be6m7brci0ic2")
 @onready var paddle: Paddle = $Paddle
 @onready var ball: Ball = $Ball
 @onready var lives_label: Label = $UI/LivesLabel
+@onready var score_label: Label = $UI/ScoreLabel
+
+const ball_speed: float = 600
 
 var paddle_pos: Vector2
 var lives: int:
 	set(value):
 		lives = value
 		lives_label.text = str(lives)
+var score: int:
+	set(value):
+		score = value
+		score_label.text = str(score)
 
 
 func _ready():
+	reset()
+	
+	
+func reset():
 	lives = 3
+	score = 0
 	_load_level(level_1)
 	ball.get_paddle_pos(paddle.position)
 	
@@ -25,13 +37,15 @@ func _physics_process(_delta: float) -> void:
 		
 		
 func _load_level(level: Node2D):
-	var tilemap: TileMapLayer = level.get_node("TileMapLayer")
+	ball.speed = ball_speed
+	var tilemap: TileMapLayer = level.get_node("BrickMap")
 	var tile_positions := tilemap.get_used_cells()
 	for tile_position in tile_positions:
 		var pos := tilemap.map_to_local(tile_position)
 		var brick := BRICK.instantiate()
 		level.add_child(brick)
 		brick.position = pos
+		brick.brick_hit.connect(_on_brick_hit)
 	tilemap.queue_free()
 	
 	
@@ -45,3 +59,8 @@ func _on_bottom_area_entered(_area: Area2D) -> void:
 	paddle.reset()
 	if lives == 0:
 		game_over()
+		
+		
+func _on_brick_hit():
+	score += 1
+	ball.speed += 10

@@ -9,10 +9,14 @@ var direction: Vector2
 var start_pos: Vector2
 var radius: float = 10
 var base_speed := 600.0
-var speed := 0.0
+var max_speed := 1200.0
 var velocity: Vector2 = Vector2.DOWN
 var active := false
 var paddle_pos: Vector2
+var speed := 0.0:
+	set(new_speed):
+		speed = min(new_speed, max_speed)
+
 
 func _ready():
 	start_pos = position
